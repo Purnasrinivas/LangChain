@@ -1,0 +1,48 @@
+import os
+os.environ['OPENAI_API_KEY']='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'
+from langchain.llms import  OpenAI
+from langchain.chains import LLMChain
+from langchain.prompts import PromptTemplate
+llm=OpenAI(temperature=0.7)
+
+prompt_template_name=PromptTemplate(input_variables=['cricket'],
+               template="who won the {cricket} world cup in the year 2001")
+
+
+name_chain=LLMChain(llm=llm,prompt=prompt_template_name,output_key="Won by:")
+print(name_chain.run("Cricket"))
+
+print(type(name_chain.memory))
+
+
+from langchain.memory import ConversationBufferMemory
+
+memory=ConversationBufferMemory()
+
+name_chain=LLMChain(llm=llm,prompt=prompt_template_name,output_key="Won by:",memory=memory)  //passing memory as a parameter allows bot to remember questions asked by the user 
+print(name_chain.run("Cricket"))
+print(name_chain.run("fifa"))
+print(("memory attached :" ,name_chain.memory))
+
+from langchain.chains import ConversationChain
+
+convo=ConversationChain(llm=OpenAI(temperature=0.7))
+print("conversation:" ,convo.prompt)
+convo.run("5+5=?")
+convo.run("who is the president of india?")
+
+print(convo.memory.to_json)
+
+
+//as it is remembering everything we need to restrict the window as cost is assosicated with it
+
+from langchain.memory import ConversationBufferWindowMemory
+
+memory=ConversationBufferWindowMemory(k=1)    // k parameter helps in restriting the window of questions that needs to be stored.
+
+convo=ConversationChain(llm=OpenAI(temperature=0.7))
+
+convo.run("5+5=?")
+convo.run("who is the president of india?")
+convo.run("5-5=?")
+print(convo.memory)
