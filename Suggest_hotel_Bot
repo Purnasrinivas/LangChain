@@ -1,0 +1,41 @@
+from langchain.llms import  OpenAI
+from langchain.prompts import PromptTemplate
+from langchain.chains import LLMChain
+from langchain.chains import SequentialChain
+
+
+llm=OpenAI(temperature=0.6)
+hotel_name=llm("I want open Indian hotel.Suggest me a fancy name for this.")
+
+
+
+
+
+prompt_template_name=PromptTemplate(input_variables=['cuisine'],
+               template="I want to open {cuisine} hotel.suggest me a fancy name for this.")
+
+
+name_chain=LLMChain(llm=llm,prompt=prompt_template_name,output_key="hotel_name")
+
+
+
+
+
+prompt_template_items=PromptTemplate(input_variables=['hotel_name'],
+               template="suggest me some menu items for {hotel_name}.Return the items in the form of a list")
+
+
+
+food_items_chain=LLMChain(llm=llm,prompt=prompt_template_items,output_key="menu_items")
+
+
+
+
+chain=SequentialChain(chains=[name_chain,food_items_chain],
+              input_variables=['cuisine']   ,
+                   output_variables=['hotel_name'  ,'menu_items'  ])
+
+
+y=chain({'cuisine':'Indian'})
+
+print(y)
