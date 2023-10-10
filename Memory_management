@@ -19,12 +19,18 @@ from langchain.memory import ConversationBufferMemory
 
 memory=ConversationBufferMemory()
 
-name_chain=LLMChain(llm=llm,prompt=prompt_template_name,output_key="Won by:",memory=memory)  //passing memory as a parameter allows bot to remember questions asked by the user 
+name_chain=LLMChain(llm=llm,prompt=prompt_template_name,output_key="Won by:",memory=memory)  //passing memory as a parameter allows chain used to answer questions related to pervious once.
+ConversationChain allows bot display previously asked questions in the chat window.
+ConversationBufferMemory allows us to restirct the window of interaction.
 print(name_chain.run("Cricket"))
 print(name_chain.run("fifa"))
 print(("memory attached :" ,name_chain.memory))
 
 from langchain.chains import ConversationChain
+
+
+
+//ConversationChain allows bot display previously asked questions in the chat window.
 
 convo=ConversationChain(llm=OpenAI(temperature=0.7))
 print("conversation:" ,convo.prompt)
@@ -36,6 +42,7 @@ print(convo.memory.to_json)
 
 //as it is remembering everything we need to restrict the window as cost is assosicated with it
 
+//ConversationBufferMemory allows us to restirct the window of interaction.
 from langchain.memory import ConversationBufferWindowMemory
 
 memory=ConversationBufferWindowMemory(k=1)    // k parameter helps in restriting the window of questions that needs to be stored.
